@@ -1,0 +1,70 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Search YouTube</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+	<script src="app.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>Search YouTube</h1>
+		<div class="search-box">
+			<label for="search-input">Search for a video:</label>
+			<input type="text" id="search-input">
+			<button id="search-button">Search</button>
+		</div>
+		<div class="video-list"></div>
+	</div>
+	<div id="video-popup" class="white-popup mfp-hide">
+		<iframe id="video-iframe" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
+	</div>
+</body>
+</html>
+<!-- partial -->
+  <script>
+// app.js
+$(document).ready(function() {
+	$('#search-button').click(function() {
+		var searchTerm = $('#search-input').val();
+		var url = 'https://www.googleapis.com/youtube/v3/search';
+		var params = {
+			part: 'snippet',
+			q: searchTerm,
+			type: 'video',
+			maxResults: 10,
+			key: 'AIzaSyDAfNPJKuq6Cy2bkm3SIXJOL4RHLpEJGJs'
+		};
+
+		$.getJSON(url, params, function(data) {
+			console.log(data);
+			var results = data.items;
+			$('.video-list').empty();
+			$.each(results, function(index, item) {
+				var videoId = item.id.videoId;
+				var videoTitle = item.snippet.title;
+				var videoThumbnail = item.snippet.thumbnails.medium.url;
+				var videoLink = 'https://www.youtube.com/watch?v=' + videoId;
+
+				var html = '<div class="video-item">' +
+					'<a class="popup-youtube" href="' + videoLink + '">' +
+						'<img src="' + videoThumbnail + '" alt="' + videoTitle + '">' +
+						'<h3>' + videoTitle + '</h3>' +
+					'</a>' +
+				'</div>';
+
+				$('.video-list').append(html);
+			});
+
+			$('.popup-youtube').magnificPopup({
+				type: 'iframe'
+			});
+		});
+	});
+});
+
+</script>
+
+</body>
+</html>
